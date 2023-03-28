@@ -17,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="RYC-xQ-T1K">
-                                <rect key="frame" x="16" y="83.000000000000028" width="361" height="377.66666666666674"/>
+                                <rect key="frame" x="16" y="83" width="361" height="617.66666666666663"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="h4Z-PO-6GF">
                                         <rect key="frame" x="0.0" y="0.0" width="361" height="262"/>
@@ -191,8 +191,14 @@
                                             </button>
                                         </subviews>
                                     </stackView>
+                                    <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yib-rZ-2Fj">
+                                        <rect key="frame" x="0.0" y="342" width="361" height="216"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="BYZ-38-t0r" id="3l6-ga-DZz"/>
+                                        </connections>
+                                    </pickerView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q81-0N-YEz">
-                                        <rect key="frame" x="0.0" y="342" width="361" height="35.666666666666686"/>
+                                        <rect key="frame" x="0.0" y="582" width="361" height="35.666666666666629"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="filled" title="REFRESH">
                                             <fontDescription key="titleFontDescription" type="system" weight="medium" pointSize="18"/>
@@ -220,6 +226,7 @@
                     <connections>
                         <outlet property="countLabel" destination="E6T-xp-qwD" id="jNr-M1-oDe"/>
                         <outlet property="ethnicityLabel" destination="qhP-Ne-qa4" id="Jh6-tV-u0I"/>
+                        <outlet property="ethnicityPickerView" destination="Yib-rZ-2Fj" id="xzV-Ge-W7R"/>
                         <outlet property="femaleButton" destination="vKF-hZ-Bml" id="8oh-6g-kbZ"/>
                         <outlet property="genderLabel" destination="qOP-Hb-C6d" id="45s-8v-KVk"/>
                         <outlet property="maleButton" destination="qNh-Hu-hRt" id="dWN-6P-0Zs"/>

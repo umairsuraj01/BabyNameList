@@ -18,6 +18,9 @@ class NameViewController: UIViewController {
     @IBOutlet weak var maleButton: UIButton?
     @IBOutlet weak var femaleButton: UIButton?
     @IBOutlet weak var refreshButton: UIButton?
+    @IBOutlet weak var ethnicityPickerView: UIPickerView?
+    
+    
     private let nameViewModel = NameViewModel()
     private let input: PassthroughSubject<NameViewModel.Input, Never> = .init()
     private var cancellables = Set<AnyCancellable>()
@@ -40,7 +43,7 @@ class NameViewController: UIViewController {
     @IBAction func genderButtonTapped(_ sender: Any) {
         if (sender as? UIButton)?.isSelected == false {
             toggleGenderSelection(sender as! UIButton)
-            input.send(.genderButtonDidTap)
+            input.send(.filterValueDidChange)
         }
     }
     
@@ -48,9 +51,11 @@ class NameViewController: UIViewController {
         currentButton.isSelected = true
         if currentButton.tag == 0 {
             femaleButton?.isSelected = false
+            nameViewModel.selectedGender = (self.maleButton?.titleLabel?.text)!
         }
         else {
             maleButton?.isSelected = false
+            nameViewModel.selectedGender = (self.femaleButton?.titleLabel?.text)!
         }
     }
     
@@ -61,14 +66,21 @@ class NameViewController: UIViewController {
                 switch event {
                 case .fetchNameDidFail(let error):
                     self.nameLabel?.text = error.localizedDescription
-                case .fetchNameDidSucceed(let names):
-                    let gender = self.selectedGender()
-                    let nameList = self.filterData(gender, names).randomElement()!
-                    self.displayNameData(nameList)
+                case .fetchNameDidSucceed(let name):
+                    self.displayNameData(name)
+                case .reloadNameData:
+                    self.reloadData()
                 case .toggleButton(let isEnabled):
                     self.refreshButton?.isEnabled = isEnabled
                 }
             }.store(in: &cancellables)
+    }
+    
+    func reloadData() {
+        self.ethnicityPickerView?.reloadAllComponents()
+        let selectedIndex = self.ethnicityPickerView?.selectedRow(inComponent: 0)
+        nameViewModel.selectedEthnicity = nameViewModel.ethnicityArray[selectedIndex ?? 0]
+        input.send(.filterValueDidChange)
     }
     
     func displayNameData(_ nameData: NameList) {
@@ -79,15 +91,23 @@ class NameViewController: UIViewController {
         self.countLabel?.text = nameData.count
         self.rankLabel?.text = nameData.rank
     }
-    
-    func filterData(_ filterStr: String, _ names: [NameList]) -> [NameList] {
-        return names.filter {$0.gender.lowercased() == filterStr.lowercased()}
+}
+
+extension NameViewController: UIPickerViewAccessibilityDelegate, UIPickerViewDataSource {
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return nameViewModel.ethnicityArray.count
     }
     
-    func selectedGender() -> String {
-        if self.maleButton?.isSelected == true {
-            return (self.maleButton?.titleLabel?.text)!
-        }
-        return (self.femaleButton?.titleLabel?.text)!
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return nameViewModel.ethnicityArray[row].ethnicity
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        nameViewModel.selectedEthnicity = nameViewModel.ethnicityArray[row]
+        input.send(.filterValueDidChange)
     }
 }
